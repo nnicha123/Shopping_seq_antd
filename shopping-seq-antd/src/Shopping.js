@@ -235,7 +235,7 @@ class Shopping extends Component {
                         </Col>
                     </Row>
                 </Content>
-                <Footer style={{ textAlign: 'center', background: '#001529', color: 'white', padding: '30px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
+                <Footer style={{ textAlign: 'center', background: '#001529', color: 'white', padding: '30px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Shopping Project ©2020 Created by Nicha N.</Footer>
             </div>
         )
     }
