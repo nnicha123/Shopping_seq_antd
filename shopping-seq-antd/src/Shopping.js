@@ -33,26 +33,32 @@ const { Header, Content, Footer } = Layout;
 
 class Shopping extends Component {
     state = {
-        cakes: [{ image: cake1, title: 'The black wedding cake', price: 30, quantity: 1 },
-        { image: cake2, title: 'The pink jolly cupcake', price: 10, quantity: 1 },
-        { image: cake3, title: 'The chocolate drip cake', price: 35, quantity: 1 },
-        { image: cake4, title: 'The icecream cone cake', price: 25, quantity: 1 },
-        { image: cake5, title: 'The blue wedding cake', price: 41, quantity: 1 },
-        { image: cake6, title: 'The pink tall cake', price: 21, quantity: 1 },
-        { image: cake7, title: 'Colorful Macaroons', price: 15, quantity: 1 },
-        { image: cake8, title: 'Orange fruit cake', price: 16, quantity: 1 }],
-        games: [{ image: game1, title: 'Adventurous Railway', price: 30, quantity: 1 },
-        { image: game2, title: 'Sammy Suafeas', price: 10, quantity: 1 },
-        { image: game3, title: 'Logical thinking game', price: 35, quantity: 1 },
-        { image: game4, title: 'Train disaster', price: 25, quantity: 1 },
-        { image: game5, title: 'Drop the balls', price: 41, quantity: 1 },
-        { image: game6, title: 'Exciting pinballs', price: 21, quantity: 1 }],
-        bags: [{ image: bag1, title: 'Black and Red Tulip', price: 30, quantity: 1 },
-        { image: bag2, title: 'Sweet Pink Tulip', price: 10, quantity: 1 },
-        { image: bag3, title: 'Natural Yellow Tulip', price: 35, quantity: 1 },
-        { image: bag4, title: "Doctor's Maroon", price: 25, quantity: 1 },
-        { image: bag5, title: "Doctor's Navy", price: 41, quantity: 1 },
-        { image: bag6, title: "Doctor's Black", price: 21, quantity: 1 }],
+        cakes: [
+            { image: cake1, title: 'The black wedding cake', price: 30, quantity: 1 },
+            { image: cake2, title: 'The pink jolly cupcake', price: 10, quantity: 1 },
+            { image: cake3, title: 'The chocolate drip cake', price: 35, quantity: 1 },
+            { image: cake4, title: 'The icecream cone cake', price: 25, quantity: 1 },
+            { image: cake5, title: 'The blue wedding cake', price: 41, quantity: 1 },
+            { image: cake6, title: 'The pink tall cake', price: 21, quantity: 1 },
+            { image: cake7, title: 'Colorful Macaroons', price: 15, quantity: 1 },
+            { image: cake8, title: 'Orange fruit cake', price: 16, quantity: 1 }],
+
+        games: [
+            { image: game1, title: 'Adventurous Railway', price: 30, quantity: 1 },
+            { image: game2, title: 'Sammy Suafeas', price: 10, quantity: 1 },
+            { image: game3, title: 'Logical thinking game', price: 35, quantity: 1 },
+            { image: game4, title: 'Train disaster', price: 25, quantity: 1 },
+            { image: game5, title: 'Drop the balls', price: 41, quantity: 1 },
+            { image: game6, title: 'Exciting pinballs', price: 21, quantity: 1 }],
+
+        bags: [
+            { image: bag1, title: 'Black and Red Tulip', price: 30, quantity: 1 },
+            { image: bag2, title: 'Sweet Pink Tulip', price: 10, quantity: 1 },
+            { image: bag3, title: 'Natural Yellow Tulip', price: 35, quantity: 1 },
+            { image: bag4, title: "Doctor's Maroon", price: 25, quantity: 1 },
+            { image: bag5, title: "Doctor's Navy", price: 41, quantity: 1 },
+            { image: bag6, title: "Doctor's Black", price: 21, quantity: 1 }],
+
         checkOut: [],
         favourite: [],
         components: [true, true, true],
@@ -63,20 +69,15 @@ class Shopping extends Component {
 
     componentDidMount = () => {
         let dataCal = 0
-
-        // console.log(this.state.titleFav)
         axios.get('http://localhost:8000/checkouts').then(res => {
             let newTitles = res.data.map(el => el.title)
             this.setState({ checkOut: res.data, title: newTitles })
-            console.log(this.state.title)
             for (let i = 0; i < res.data.length; i++) dataCal += res.data[i].price * res.data[i].quantity
             this.setState({ total: dataCal })
         })
         axios.get('http://localhost:8000/favourites').then(res => {
             let newFavTitles = res.data.map(el => el.title)
-            // console.log(res.data)
             this.setState({ favourite: res.data, titleFav: newFavTitles })
-            console.log(this.state.titleFav)
         })
 
     }
@@ -95,10 +96,7 @@ class Shopping extends Component {
     }
     updateFav = (ind) => {
         let newItem = this.state.cakes[ind]
-
-        if (this.state.titleFav.indexOf(newItem.title) <0) {
-            console.log(newItem.title)
-            console.log(this.state.titleFav.indexOf(newItem.title))
+        if (this.state.titleFav.indexOf(newItem.title) < 0) {
             this.setState({ titleFav: [...this.state.titleFav, newItem.title] })
             axios.post('http://localhost:8000/favourites', newItem).then(() => {
                 axios.get('http://localhost:8000/favourites').then(res => {
@@ -125,7 +123,7 @@ class Shopping extends Component {
     updateFavGames = (ind) => {
         let newItem = this.state.games[ind]
 
-        if (this.state.titleFav.indexOf(newItem.title) <0) {
+        if (this.state.titleFav.indexOf(newItem.title) < 0) {
             this.setState({ titleFav: [...this.state.titleFav, newItem.title] })
             axios.post('http://localhost:8000/favourites', newItem).then(() => {
                 axios.get('http://localhost:8000/favourites').then(res => this.setState({ favourite: res.data }))
@@ -147,7 +145,7 @@ class Shopping extends Component {
     }
     updateFavBags = (ind) => {
         let newItem = this.state.bags[ind]
-        if (this.state.titleFav.indexOf(newItem.title) <0) {
+        if (this.state.titleFav.indexOf(newItem.title) < 0) {
             this.setState({ titleFav: [...this.state.titleFav, newItem.title] })
             axios.post('http://localhost:8000/favourites', newItem).then(() => {
                 axios.get('http://localhost:8000/favourites').then(res => this.setState({ favourite: res.data }))
@@ -159,7 +157,7 @@ class Shopping extends Component {
         axios.delete('http://localhost:8000/checkouts/' + id).then(() => {
             axios.get('http://localhost:8000/checkouts').then(res => {
                 let newTitle = res.data.map(el => el.title)
-                this.setState({ checkOut: res.data, title:newTitle })
+                this.setState({ checkOut: res.data, title: newTitle })
                 for (let i = 0; i < res.data.length; i++) dataCal += res.data[i].price * res.data[i].quantity
                 this.setState({ total: dataCal })
             })
@@ -169,7 +167,7 @@ class Shopping extends Component {
         axios.delete('http://localhost:8000/favourites/' + id).then(() => {
             axios.get('http://localhost:8000/favourites').then(res => {
                 let newTitle = res.data.map(el => el.title)
-                this.setState({ favourite: res.data,titleFav:newTitle })
+                this.setState({ favourite: res.data, titleFav: newTitle })
             })
         })
     }
@@ -179,7 +177,6 @@ class Shopping extends Component {
         newData[0].quantity += 1
         axios.put('http://localhost:8000/checkouts/' + id, newData[0]).then(() => {
             axios.get('http://localhost:8000/checkouts').then(res => {
-                this.setState({ checkOut: res.data })
                 for (let i = 0; i < res.data.length; i++) dataCal += res.data[i].price * res.data[i].quantity
                 this.setState({ total: dataCal })
             })
@@ -193,7 +190,6 @@ class Shopping extends Component {
             newData[0].quantity -= 1
             axios.put('http://localhost:8000/checkouts/' + id, newData[0]).then(() => {
                 axios.get('http://localhost:8000/checkouts').then(res => {
-                    this.setState({ checkOut: res.data })
                     for (let i = 0; i < res.data.length; i++) dataCal += res.data[i].price * res.data[i].quantity
                     this.setState({ total: dataCal })
                 })
