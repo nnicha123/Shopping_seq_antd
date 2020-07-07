@@ -158,7 +158,8 @@ class Shopping extends Component {
         let dataCal = 0
         axios.delete('http://localhost:8000/checkouts/' + id).then(() => {
             axios.get('http://localhost:8000/checkouts').then(res => {
-                this.setState({ checkOut: res.data })
+                let newTitle = res.data.map(el => el.title)
+                this.setState({ checkOut: res.data, title:newTitle })
                 for (let i = 0; i < res.data.length; i++) dataCal += res.data[i].price * res.data[i].quantity
                 this.setState({ total: dataCal })
             })
@@ -166,7 +167,10 @@ class Shopping extends Component {
     }
     deleteFav = (id) => {
         axios.delete('http://localhost:8000/favourites/' + id).then(() => {
-            axios.get('http://localhost:8000/favourites').then(res => this.setState({ favourite: res.data }))
+            axios.get('http://localhost:8000/favourites').then(res => {
+                let newTitle = res.data.map(el => el.title)
+                this.setState({ favourite: res.data,titleFav:newTitle })
+            })
         })
     }
     addQuantity = (id) => {
