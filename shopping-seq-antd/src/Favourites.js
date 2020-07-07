@@ -13,7 +13,7 @@ function Favourites(props) {
                     <div>{el.title}</div>
                 </div>
                 <div>
-                    <Button icon={<DeleteFilled style={{ fontSize: '20px' }} />} style={{ color: 'maroon', background: 'white', border: 'none' }} onClick={() => props.deleteFav(index)}></Button>
+                    <Button icon={<DeleteFilled style={{ fontSize: '20px' }} />} style={{ color: 'maroon', background: 'white', border: 'none' }} onClick={() => props.deleteFav(el.id)}></Button>
                 </div>
             </div>)}
         </div>

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 import Favourites from './Favourites'
 import CheckOuts from './CheckOuts'
 import Cakes from './Cakes'
@@ -29,6 +30,7 @@ import 'antd/dist/antd.css'
 import { Layout, Menu, Row, Col } from 'antd';
 const { Header, Content, Footer } = Layout;
 
+
 class Shopping extends Component {
     state = {
         cakes: [{ image: cake1, title: 'The black wedding cake', price: 30, quantity: 1 },
@@ -55,57 +57,143 @@ class Shopping extends Component {
         favourite: [],
         components: [true, true, true],
         total: 0,
+        title: [],
+        titleFav: []
     }
 
-    updateCheckout = (ind) => {
+    componentDidMount = () => {
+        let dataCal = 0
+
+        // console.log(this.state.titleFav)
+        axios.get('http://localhost:8000/checkouts').then(res => {
+            let newTitles = res.data.map(el => el.title)
+            this.setState({ checkOut: res.data, title: newTitles })
+            console.log(this.state.title)
+            for (let i = 0; i < res.data.length; i++) dataCal += res.data[i].price * res.data[i].quantity
+            this.setState({ total: dataCal })
+        })
+        axios.get('http://localhost:8000/favourites').then(res => {
+            let newFavTitles = res.data.map(el => el.title)
+            // console.log(res.data)
+            this.setState({ favourite: res.data, titleFav: newFavTitles })
+            console.log(this.state.titleFav)
+        })
+
+    }
+
+    updateCheckout = (ind, id) => {
         let newItem = this.state.cakes[ind]
-        newItem.quantity = 1
-        this.setState({ checkOut: [...this.state.checkOut, newItem], total: this.state.total + this.state.cakes[ind].price })
+        let newPrice = this.state.cakes[ind].price
+
+        if (this.state.title.indexOf(newItem.title) < 0) {
+            newItem.quantity = 1
+            this.setState({ title: [...this.state.title, newItem.title] })
+            axios.post('http://localhost:8000/checkouts', newItem).then(() => {
+                axios.get('http://localhost:8000/checkouts').then(res => this.setState({ checkOut: res.data, total: this.state.total + newPrice }))
+            })
+        }
     }
     updateFav = (ind) => {
         let newItem = this.state.cakes[ind]
-        this.setState({ favourite: [...this.state.favourite, newItem] })
+
+        if (this.state.titleFav.indexOf(newItem.title) <0) {
+            console.log(newItem.title)
+            console.log(this.state.titleFav.indexOf(newItem.title))
+            this.setState({ titleFav: [...this.state.titleFav, newItem.title] })
+            axios.post('http://localhost:8000/favourites', newItem).then(() => {
+                axios.get('http://localhost:8000/favourites').then(res => {
+                    let newTitles = res.data.map(el => el.title)
+                    this.setState({ favourite: res.data, titleFav: newTitles })
+                })
+            })
+        }
+
     }
     updateCheckoutGames = (ind) => {
         let newItem = this.state.games[ind]
-        newItem.quantity = 1
-        this.setState({ checkOut: [...this.state.checkOut, newItem], total: this.state.total + this.state.games[ind].price })
+        let newPrice = this.state.games[ind].price
+        console.log(this.state.title.indexOf(newItem.title))
+
+        if (this.state.title.indexOf(newItem.title) < 0) {
+            newItem.quantity = 1
+            this.setState({ title: [...this.state.title, newItem.title] })
+            axios.post('http://localhost:8000/checkouts', newItem).then(() => {
+                axios.get('http://localhost:8000/checkouts').then(res => this.setState({ checkOut: res.data, total: this.state.total + newPrice }))
+            })
+        }
     }
     updateFavGames = (ind) => {
         let newItem = this.state.games[ind]
-        this.setState({ favourite: [...this.state.favourite, newItem] })
+
+        if (this.state.titleFav.indexOf(newItem.title) <0) {
+            this.setState({ titleFav: [...this.state.titleFav, newItem.title] })
+            axios.post('http://localhost:8000/favourites', newItem).then(() => {
+                axios.get('http://localhost:8000/favourites').then(res => this.setState({ favourite: res.data }))
+            })
+        }
     }
     updateCheckoutBags = (ind) => {
         let newItem = this.state.bags[ind]
-        newItem.quantity = 1
-        this.setState({ checkOut: [...this.state.checkOut, newItem], total: this.state.total + this.state.bags[ind].price })
+        let newPrice = this.state.bags[ind].price
+
+        if (this.state.title.indexOf(newItem.title) < 0) {
+            newItem.quantity = 1
+            this.setState({ title: [...this.state.title, newItem.title] })
+            axios.post('http://localhost:8000/checkouts', newItem).then(() => {
+                axios.get('http://localhost:8000/checkouts').then(res => this.setState({ checkOut: res.data, total: this.state.total + newPrice }))
+            })
+        }
+
     }
     updateFavBags = (ind) => {
         let newItem = this.state.bags[ind]
-        this.setState({ favourite: [...this.state.favourite, newItem] })
+        if (this.state.titleFav.indexOf(newItem.title) <0) {
+            this.setState({ titleFav: [...this.state.titleFav, newItem.title] })
+            axios.post('http://localhost:8000/favourites', newItem).then(() => {
+                axios.get('http://localhost:8000/favourites').then(res => this.setState({ favourite: res.data }))
+            })
+        }
     }
-    deleteItem = (ind) => {
-        const newList = [...this.state.checkOut].filter((el, index) => index !== ind)
-        this.setState({ checkOut: [...newList], total: this.state.total - this.state.checkOut[ind].price * this.state.checkOut[ind].quantity })
-    }
-    deleteFav = (ind) => {
-        const newFav = [...this.state.favourite].filter((el, index) => index !== ind)
-        this.setState({ favourite: [...newFav] })
-    }
-    addQuantity = (index) => {
-        const newData = [...this.state.checkOut]
-        newData[index].quantity += 1
+    deleteItem = (id) => {
         let dataCal = 0
-        for (let i = 0; i < newData.length; i++) dataCal += newData[i].price * newData[i].quantity
-        this.setState({ checkOut: newData, total: dataCal })
+        axios.delete('http://localhost:8000/checkouts/' + id).then(() => {
+            axios.get('http://localhost:8000/checkouts').then(res => {
+                this.setState({ checkOut: res.data })
+                for (let i = 0; i < res.data.length; i++) dataCal += res.data[i].price * res.data[i].quantity
+                this.setState({ total: dataCal })
+            })
+        })
     }
-    deleteQuantity = (index) => {
-        const newData = [...this.state.checkOut]
-        if (newData[index].quantity > 1) {
-            newData[index].quantity -= 1
-            let dataCal = 0
-            for (let i = 0; i < newData.length; i++) dataCal += newData[i].price * newData[i].quantity
-            this.setState({ checkOut: newData, total: dataCal })
+    deleteFav = (id) => {
+        axios.delete('http://localhost:8000/favourites/' + id).then(() => {
+            axios.get('http://localhost:8000/favourites').then(res => this.setState({ favourite: res.data }))
+        })
+    }
+    addQuantity = (id) => {
+        let dataCal = 0
+        let newData = [...this.state.checkOut].filter(el => el.id === id)
+        newData[0].quantity += 1
+        axios.put('http://localhost:8000/checkouts/' + id, newData[0]).then(() => {
+            axios.get('http://localhost:8000/checkouts').then(res => {
+                this.setState({ checkOut: res.data })
+                for (let i = 0; i < res.data.length; i++) dataCal += res.data[i].price * res.data[i].quantity
+                this.setState({ total: dataCal })
+            })
+        })
+    }
+    deleteQuantity = (id) => {
+        let dataCal = 0
+        let newData = [...this.state.checkOut].filter(el => el.id === id)
+
+        if (newData[0].quantity > 1) {
+            newData[0].quantity -= 1
+            axios.put('http://localhost:8000/checkouts/' + id, newData[0]).then(() => {
+                axios.get('http://localhost:8000/checkouts').then(res => {
+                    this.setState({ checkOut: res.data })
+                    for (let i = 0; i < res.data.length; i++) dataCal += res.data[i].price * res.data[i].quantity
+                    this.setState({ total: dataCal })
+                })
+            })
         }
     }
 
@@ -143,7 +231,7 @@ class Shopping extends Component {
                         </Col>
                     </Row>
                 </Content>
-                <Footer style={{ textAlign: 'center', background: '#001529', color: 'white',padding:'30px',display:'flex',justifyContent:'center',alignItems:'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
+                <Footer style={{ textAlign: 'center', background: '#001529', color: 'white', padding: '30px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
             </div>
         )
     }
