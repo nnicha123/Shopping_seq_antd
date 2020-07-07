@@ -1,0 +1,24 @@
+.content{
+  padding: 30px;
+  display: grid;
+  grid-template-columns: 70% 30%;
+}
+
+footer{
+  height: 50px;
+  background-color: rgb(85, 14, 14);
+}
+
+@media only screen and (max-width: 992px){
+  .content{
+      padding: 20px;
+      margin-bottom: 10px;
+      grid-template-columns: 100%;
+      margin: 0 auto;
+  }
+  .content-left{
+    display: flex;
+    flex-direction: column;
+  }
+
+}
